@@ -35,5 +35,5 @@
 
   - name: get load_rabbitmq.py
     get_url:
-      url=https://github.com/mtdoyle/ATTGigapowerFinder/raw/master/Resources/LoadRabbitMQ/addresses
+      url=https://raw.githubusercontent.com/mtdoyle/ATTGigapowerFinder/0.1/resources/LoadRabbitMQ/addresses
       dest={{ ansible_env.HOME }}/gigapower/addresses
