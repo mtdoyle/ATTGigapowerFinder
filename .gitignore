@@ -1,0 +1,11 @@
+.idea
+*.iml
+*.war
+target/
+git.properties
+logs/
+phantomjsdriver.log
+*.DS_Store
+*.vagrant
+*.class
+classes/

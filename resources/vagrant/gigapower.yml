@@ -1,0 +1,39 @@
+- hosts: all
+  user: ubuntu
+  sudo: false
+  tasks:
+
+  - name: create gigapower
+    file: path={{ ansible_env.HOME }}/gigapower state=directory mode=0755
+
+  - name: download gigapower jar
+    get_url:
+      url=https://github.com/mtdoyle/ATTGigapowerFinder/releases/download/1.0/ATTGigapowerFinder-1.0-SNAPSHOT-jar-with-dependencies.jar
+      dest={{ ansible_env.HOME }}/gigapower/ATTGigapowerFinder.jar
+      force=yes
+
+  - name: download gigapower property file
+    get_url:
+      url=https://github.com/mtdoyle/ATTGigapowerFinder/releases/download/1.0/local.properties
+      dest={{ ansible_env.HOME }}/gigapower
+
+  - name: replace ip in property file
+    replace: dest={{ ansible_env.HOME }}/gigapower/local.properties regexp='^databaseServer=.*' replace='databaseServer={{ ansible_eth0[\'ipv4\'][\'address\'] }}'
+
+  - name: replace ip in property file
+    replace: dest={{ ansible_env.HOME }}/gigapower/local.properties regexp='^rabbitmqServer=.*' replace='rabbitmqServer={{ ansible_eth0[\'ipv4\'][\'address\'] }}'
+
+  - name: get load_rabbitmq.py
+    get_url:
+      url=https://github.com/mtdoyle/ATTGigapowerFinder/raw/master/Resources/LoadRabbitMQ/load_rabbitmq.py     
+      dest={{ ansible_env.HOME }}/gigapower/
+  
+  - name: install pika dependency for load_rabbitmq.py
+    pip: name=pika
+    become: yes
+    become_method: sudo
+
+  - name: get load_rabbitmq.py
+    get_url:
+      url=https://github.com/mtdoyle/ATTGigapowerFinder/raw/master/Resources/LoadRabbitMQ/mega_addresses_final
+      dest={{ ansible_env.HOME }}/gigapower/mega_addresses_final
