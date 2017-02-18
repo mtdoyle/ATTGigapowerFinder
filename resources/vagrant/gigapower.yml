@@ -8,13 +8,13 @@
 
   - name: download gigapower jar
     get_url:
-      url=https://github.com/mtdoyle/ATTGigapowerFinder/releases/download/1.0/ATTGigapowerFinder-1.0-SNAPSHOT-jar-with-dependencies.jar
+      url=https://github.com/mtdoyle/ATTGigapowerFinder/blob/0.1/out/artifacts/ATTGigapowerFinder_jar/ATTGigapowerFinder.jar
       dest={{ ansible_env.HOME }}/gigapower/ATTGigapowerFinder.jar
       force=yes
 
   - name: download gigapower property file
     get_url:
-      url=https://github.com/mtdoyle/ATTGigapowerFinder/releases/download/1.0/local.properties
+      url=https://raw.githubusercontent.com/mtdoyle/ATTGigapowerFinder/0.1/resources/properties/local.properties
       dest={{ ansible_env.HOME }}/gigapower
 
   - name: replace ip in property file
@@ -25,7 +25,7 @@
 
   - name: get load_rabbitmq.py
     get_url:
-      url=https://github.com/mtdoyle/ATTGigapowerFinder/raw/master/Resources/LoadRabbitMQ/load_rabbitmq.py     
+      url=https://raw.githubusercontent.com/mtdoyle/ATTGigapowerFinder/0.1/resources/LoadRabbitMQ/load_rabbitmq.py
       dest={{ ansible_env.HOME }}/gigapower/
   
   - name: install pika dependency for load_rabbitmq.py
@@ -35,5 +35,5 @@
 
   - name: get load_rabbitmq.py
     get_url:
-      url=https://github.com/mtdoyle/ATTGigapowerFinder/raw/master/Resources/LoadRabbitMQ/mega_addresses_final
-      dest={{ ansible_env.HOME }}/gigapower/mega_addresses_final
+      url=https://github.com/mtdoyle/ATTGigapowerFinder/raw/master/Resources/LoadRabbitMQ/addresses
+      dest={{ ansible_env.HOME }}/gigapower/addresses
