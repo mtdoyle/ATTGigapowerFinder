@@ -1,8 +1,7 @@
 import com.rabbitmq.client.*;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -101,15 +100,9 @@ public class ATTGigapowerFinder implements Runnable {
 //        DesiredCapabilities caps = new DesiredCapabilities();
 //        caps.setJavascriptEnabled(true);
 //        caps.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX + "loadImages", false);
-//        PhantomJSDriver webdriver = new PhantomJSDriver(caps);
+        PhantomJSDriver webdriver = new PhantomJSDriver();
 //        Logger.getLogger(PhantomJSDriverService.class.getName()).setLevel(Level.OFF);
 //        webdriver.manage().window().setSize(new Dimension(1400,1000));
-
-//        File firefoxApp = new File("/Users/mike/Downloads/firefox-sdk/bin/Firefox.app");
-//        FirefoxBinary firefoxBinary = new FirefoxBinary(firefoxApp);
-//        FirefoxProfile firefoxProfile = new FirefoxProfile();
-//        WebDriver webdriver = new FirefoxDriver(firefoxBinary, firefoxProfile);
-        WebDriver webdriver = new FirefoxDriver();
 
         webdriver.get("https://www.att.com/shop/unified/availability.html");
 
