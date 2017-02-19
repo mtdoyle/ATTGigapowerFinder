@@ -9,3 +9,4 @@ phantomjsdriver.log
 *.vagrant
 *.class
 classes/
+resources/vagrant/vagrant
