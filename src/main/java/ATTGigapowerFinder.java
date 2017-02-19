@@ -129,6 +129,17 @@ public class ATTGigapowerFinder implements Runnable {
         webdriver.findElement(By.id("zipcode")).sendKeys(zip);
         webdriver.findElement(By.xpath("//*[@id=\"content\"]/div/div[2]/div[1]/div/div/div/form/div[2]/input")).click();
 
+        long millis = System.currentTimeMillis();
+        long currTime = millis;
+        while (currTime - millis < 10000) {
+            if (webdriver.findElements(By.xpath("//*[@id=\"content\"]/div/div[1]/div[5]/div[1]/div/div/div[2]/div/span/p")).size() > 0){
+                break;
+            }
+            else {
+                currTime = System.currentTimeMillis();
+            }
+        }
+
         if (webdriver.findElements(By.xpath("//*[@id=\"content\"]/div/div[1]/div[5]/div[1]/div/div/div[2]/div/span/p")).size() > 0){
             writeSpeedToDB("1000", currDate);
         } else if (webdriver.getPageSource().contains("Mbps")){

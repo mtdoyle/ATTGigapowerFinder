@@ -11,7 +11,7 @@ f = open(filename,'r')
 
 credentials = credentials = pika.PlainCredentials('gigapower', 'gigapower')
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host = '192.168.1.211', credentials=credentials))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host = 'localhost', credentials=credentials))
 
 channel = connection.channel()
 
