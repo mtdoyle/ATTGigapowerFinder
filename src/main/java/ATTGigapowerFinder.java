@@ -96,13 +96,7 @@ public class ATTGigapowerFinder implements Runnable {
         lon = choppedAddress[7];
         emmAcc = choppedAddress[5];
 
-
-//        DesiredCapabilities caps = new DesiredCapabilities();
-//        caps.setJavascriptEnabled(true);
-//        caps.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX + "loadImages", false);
         PhantomJSDriver webdriver = new PhantomJSDriver();
-//        Logger.getLogger(PhantomJSDriverService.class.getName()).setLevel(Level.OFF);
-//        webdriver.manage().window().setSize(new Dimension(1400,1000));
 
         webdriver.get("https://www.att.com/shop/unified/availability.html");
 
