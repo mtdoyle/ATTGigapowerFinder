@@ -1,16 +1,12 @@
 import com.rabbitmq.client.*;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriverService;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
 import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -92,69 +88,72 @@ public class ATTGigapowerFinder implements Runnable {
 
     public void checkAddress () throws InterruptedException {
         String[] choppedAddress = address.split(",");
-        String submitAddress;
-        if (choppedAddress.length == 7) {
-            street = choppedAddress[0];
-            city = choppedAddress[1];
-            state = choppedAddress[2];
-            zip = choppedAddress[3];
-            lat = choppedAddress[4];
-            lon = choppedAddress[5];
-            emmAcc = choppedAddress[6];
 
-            submitAddress = String.format("%s, %s",
-                    street,
-                    zip);
-        } else {
-            street = choppedAddress[0];
-            city = choppedAddress[1];
-            zip = choppedAddress[2].split(" ")[1];
-            lat = choppedAddress[4];
-            lon = choppedAddress[5];
-            emmAcc = choppedAddress[6];
+        street = choppedAddress[0];
+        city = choppedAddress[1].trim();
+        state = choppedAddress[2].trim();
+        zip = choppedAddress[3];
+        lat = choppedAddress[6];
+        lon = choppedAddress[7];
+        emmAcc = choppedAddress[5];
 
-            submitAddress = String.format("%s, %s",
-                    street,
-                    zip);
-        }
-        DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setJavascriptEnabled(true);
-        caps.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX + "loadImages", false);
-        PhantomJSDriver webdriver = new PhantomJSDriver(caps);
-        Logger.getLogger(PhantomJSDriverService.class.getName()).setLevel(Level.OFF);
-        webdriver.manage().window().setSize(new Dimension(1400,1000));
+
+//        DesiredCapabilities caps = new DesiredCapabilities();
+//        caps.setJavascriptEnabled(true);
+//        caps.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX + "loadImages", false);
+//        PhantomJSDriver webdriver = new PhantomJSDriver(caps);
+//        Logger.getLogger(PhantomJSDriverService.class.getName()).setLevel(Level.OFF);
+//        webdriver.manage().window().setSize(new Dimension(1400,1000));
+
+//        File firefoxApp = new File("/Users/mike/Downloads/firefox-sdk/bin/Firefox.app");
+//        FirefoxBinary firefoxBinary = new FirefoxBinary(firefoxApp);
+//        FirefoxProfile firefoxProfile = new FirefoxProfile();
+//        WebDriver webdriver = new FirefoxDriver(firefoxBinary, firefoxProfile);
+        WebDriver webdriver = new FirefoxDriver();
 
         webdriver.get("https://www.att.com/shop/unified/availability.html");
-        webdriver.findElement(By.id("streetaddress")).sendKeys(street);
-        webdriver.findElement(By.id("zipcode")).sendKeys(zip);
-        webdriver.findElement(By.xpath("//*[@id=\"content\"]/div/div[2]/div[1]/div/div/div/form/div[2]/input")).click();
 
         long millis = System.currentTimeMillis();
         long currTime = millis;
         while (currTime - millis < 10000) {
-            if (webdriver.findElements(By.xpath("//*[@id=\"content\"]/div/div[1]/div[5]/div[1]/div/div/div[2]/div/span/p")).size() > 0){
+            if (webdriver.getPageSource().contains("Check availability")) {
                 break;
             }
-            else {
-                currTime = System.currentTimeMillis();
+            currTime = System.currentTimeMillis();
+        }
+
+        webdriver.findElement(By.id("streetaddress")).sendKeys(street);
+        webdriver.findElement(By.id("zipcode")).sendKeys(zip);
+        webdriver.findElement(By.xpath("//*[@id=\"content\"]/div/div[2]/div[1]/div/div/div/form/div[2]/input")).click();
+
+        millis = System.currentTimeMillis();
+        currTime = millis;
+        while (currTime - millis < 10000) {
+            if (webdriver.getPageSource().contains("These services are available")) {
+                break;
+            }
+            currTime = System.currentTimeMillis();
+        }
+
+        WebElement element;
+        if (webdriver.getPageSource().contains("These services are available")) {
+            if (webdriver.findElements(By.xpath("/html/body/div[5]/div[1]/div/section/div/div/div[2]/div/div/div[1]/div[5]/div[1]/div/div[2]/div[2]/div/span/div/div[2]/p[1]/span")).size() > 0) {
+                element = webdriver.findElement(By.xpath("/html/body/div[5]/div[1]/div/section/div/div/div[2]/div/div/div[1]/div[5]/div[1]/div/div[2]/div[2]/div/span/div/div[2]/p[1]/span"));
+                maxSpeed = element.getAttribute("innerHTML").split(" ")[3].replace("Mbps", "");
+                writeSpeedToDB(maxSpeed, currDate);
+            } else if (webdriver.findElements(By.xpath("/html/body/div[5]/div[1]/div/section/div/div/div[2]/div/div/div[1]/div[5]/div[1]/div/div/div[2]/div/span/div/div[2]/p[1]/span")).size() > 0) {
+                element = webdriver.findElement(By.xpath("/html/body/div[5]/div[1]/div/section/div/div/div[2]/div/div/div[1]/div[5]/div[1]/div/div/div[2]/div/span/div/div[2]/p[1]/span"));
+                maxSpeed = element.getAttribute("innerHTML").split(" ")[3].replace("Mbps", "");
+                writeSpeedToDB(maxSpeed, currDate);
             }
         }
 
-        if (webdriver.findElements(By.xpath("//*[@id=\"content\"]/div/div[1]/div[5]/div[1]/div/div/div[2]/div/span/p")).size() > 0){
-            writeSpeedToDB("1000", currDate);
-        } else if (webdriver.getPageSource().contains("Mbps")){
-            if (webdriver.getPageSource().contains("'Select the services you’re interested in'")) {
-                WebElement element = webdriver.findElement(By.xpath("//*[@id=\"offerTilesDiv\"]/div[1]/div[1]/div/div[5]/div[2]/div[2]/p[1]/span[2]"));
-
-            }
-            writeSpeedToDB("1000", currDate);
-        }
-
+        webdriver.close();
     }
     private void writeSpeedToDB(String speed, String currDate){
         String sql = String.format("insert into %s_%s " +
                         "(street, city, state, zip, speed, emm_lat, emm_lng, emm_acc)" +
-                        "values ('%s', '%s', '%s', '%s', %s, %s, %s, '%s')",
+                        "values (\"%s\", \"%s\", \"%s\", \"%s\", %s, %s, %s, \"%s\")",
                 properties.getProperty("databaseTableName"),
                 currDate, street, city, state.trim(), zip, speed, lat, lon, emmAcc);
         WriteToMySQL writeToMySQL = new WriteToMySQL();
