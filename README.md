@@ -1,4 +1,4 @@
-# ATT Gigapower Speed Finder using PhantomJS headless browser
+# ATT Gigapower Speed Finder
 
 Instructions on how to set an environment up to run this program:
 
@@ -26,7 +26,7 @@ To see the results:
   * username: gigapower
   * password: gigapower
 * Once logged in, expand the gigapower item on the left-hand panel, then click on gigapower_{YEAR}\_{MONTH}\_{DAY}
-![clspeed table image](http://i.imgur.com/mRC5Pck.jpg)
+![gigapower table image](http://i.imgur.com/mRC5Pck.jpg)
   * Note: the image above was from my centurylink script - mentally replace "clspeed" with "gigapower"
 * This should open up the table with the results. 
 
