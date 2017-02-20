@@ -1,0 +1,21 @@
+- hosts: all
+  sudo: false
+  tasks:
+
+  - name: create gigapower folder
+    file: path={{ ansible_env.HOME }}/gigapower state=directory mode=0755
+
+  - name: get load_rabbitmq.py
+    get_url:
+      url=https://raw.githubusercontent.com/mtdoyle/ATTGigapowerFinder/master/resources/LoadRabbitMQ/load_rabbitmq.py
+      dest={{ ansible_env.HOME }}/gigapower/
+
+  - name: get addresses
+    get_url:
+      url=https://raw.githubusercontent.com/mtdoyle/ATTGigapowerFinder/master/resources/LoadRabbitMQ/addresses
+      dest={{ ansible_env.HOME }}/gigapower/
+
+  - name: install pika dependency for load_rabbitmq.py
+    pip: name=pika
+    become: yes
+    become_method: sudo

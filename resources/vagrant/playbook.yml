@@ -73,3 +73,4 @@
     apt: pkg=openjdk-7-jre-headless state=present
 
 - include: rabbitmq.yml
+- include: rabbitmq_setup.yml
